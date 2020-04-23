@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Fibonnachi shit</title>
+        <script src="fib.js"></script>
+        <script>
+            let fillMandelbrotImgBuffer
+            Module.onRuntimeInitialized = () => {
+                fillMandelbrotImgBuffer = Module.cwrap('fillMandelbrotImgBuffer', null, ['number', 'number', 'number']);
+                displayMandelbrot();
+            };
+            function displayMandelbrot() {
+                const canvas = document.querySelector('canvas');
+                const width = canvas.width = window.innerWidth;
+                const height = canvas.height = window.innerHeight;
+                const imgSize = width * height * 4;
+                const buffer = Module._malloc(imgSize);
+                fillMandelbrotImgBuffer(buffer, width, height);
+                const data = new ImageData(new Uint8ClampedArray(Module.HEAPU8.subarray(buffer, buffer + imgSize)), width, height);
+
+                const ctx = canvas.getContext('2d');
+                ctx.putImageData(data, 0, 0);
+                console.log(buffer);
+                // doesn't seem to be working... IDFK why
+                Module._free(buffer);
+            }
+        </script>
+        <style>
+            body, html {
+                margin: 0;
+                overflow: hidden;
+            }
+            canvas {
+                height: 100vh;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas></canvas>
+    </body>
+</html>
