@@ -21,7 +21,6 @@
 
                 const ctx = canvas.getContext('2d');
                 ctx.putImageData(data, 0, 0);
-                console.log(buffer);
                 // doesn't seem to be working... IDFK why
                 Module._free(buffer);
             }
