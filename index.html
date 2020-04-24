@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Fibonnachi Set with WebAssembly</title>
+        <title>Mandelbrot Set with WebAssembly</title>
         <script src="fib.js"></script>
         <script>
             let fillMandelbrotImgBuffer
@@ -28,12 +28,12 @@
              * display the mandelbrot set to the context passed in with the canvas' dimensions
              * @type {number} buffer adress where the buffer is
              */
-            function displayMandelbrot(canvas, ctx) {
+            function displayMandelbrot(canvas, ctx, height) {
                 const width = canvas.width;
                 const height = canvas.height;
                 const imgSize = width * height * 4;
                 const buffer = Module._malloc(imgSize);
-                fillMandelbrotImgBuffer(buffer, width, height, -2.0, 1.0, -1.2, 40);
+                fillMandelbrotImgBuffer(buffer, width, height, -2.0, -1.2, 1.2, 40);
                 const data = new ImageData(new Uint8ClampedArray(Module.HEAPU8.subarray(buffer, buffer + imgSize)), width, height);
                 ctx.putImageData(data, 0, 0);
                 Module._free(buffer);

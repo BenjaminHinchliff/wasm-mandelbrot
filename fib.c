@@ -8,11 +8,11 @@ void fillMandelbrotImgBuffer(
     int width,
     int height,
     double minRe,
-    double maxRe,
     double minIm,
+    double maxIm,
     int maxIterations
   ) {
-  double maxIm = minIm + (maxRe - minRe) * height / width;
+  double maxRe = minRe + (maxIm - minIm) * width / height;
   double reFactor = (maxRe - minRe) / (width - 1);
   double imFactor = (maxIm - minIm) / (height - 1);
 
@@ -35,14 +35,14 @@ void fillMandelbrotImgBuffer(
         zIm = 2 * zRe * zIm + cIm;
         zRe = zReSquared - zImSquared + cRe;
       }
-      int i = 4 * width * (height - y - 1) + 4 * x;
+      int i = 4 * (width * (height - y - 1) + x);
       if (inside) {
         buf[i] = 0;
         buf[i + 1] = 0;
         buf[i + 2] = 0;
         buf[i + 3] = 255;
       } else {
-        buf[i] = 255 / maxIterations * n;
+        buf[i] = (unsigned char)(255.0 / maxIterations * n);
         buf[i + 1] = 0;
         buf[i + 2] = 0;
         buf[i + 3] = 255;
