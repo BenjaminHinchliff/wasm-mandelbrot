@@ -1,0 +1,23 @@
+{
+    "env": {
+        "myDefaultIncludePath": ["${workspaceFolder}"],
+        "myCompilerPath": "/home/benjamin/code/WASM/emsdk/upstream/emscripten/"
+    },
+    "configurations": [
+        {
+            "name": "Mac",
+            "intelliSenseMode": "clang-x64",
+            "includePath": ["${myDefaultIncludePath}", "/home/benjamin/code/WASM/emsdk/upstream/emscripten/system/include/"],
+            "defines": ["FOO", "BAR=100"],
+            "compilerPath": "${myCompilerPath}/emcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": ["${workspaceFolder}"],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}
