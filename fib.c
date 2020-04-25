@@ -8,11 +8,11 @@ void fillMandelbrotImgBuffer(
     int width,
     int height,
     double minRe,
+    double maxRe,
     double minIm,
     double maxIm,
     int maxIterations
   ) {
-  double maxRe = minRe + (maxIm - minIm) * width / height;
   double reFactor = (maxRe - minRe) / (width - 1);
   double imFactor = (maxIm - minIm) / (height - 1);
 

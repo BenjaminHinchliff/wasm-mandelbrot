@@ -5,21 +5,35 @@
         <title>Mandelbrot Set with WebAssembly</title>
         <script src="fib.js"></script>
         <script>
-            let fillMandelbrotImgBuffer
+            let fillMandelbrotImgBuffer;
             Module.onRuntimeInitialized = () => {
-                fillMandelbrotImgBuffer = Module.cwrap('fillMandelbrotImgBuffer', null, ['number', 'number', 'number', 'number', 'number', 'number']);
+                fillMandelbrotImgBuffer = Module.cwrap(
+                    'fillMandelbrotImgBuffer',
+                    null,
+                    [
+                        'number',
+                        'number',
+                        'number',
+                        'number',
+                        'number',
+                        'number',
+                        'number'
+                    ]
+                );
                 const canvas = document.querySelector('canvas');
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
                 const ctx = canvas.getContext('2d');
-                displayMandelbrot(canvas, ctx);
+                const reCenter = -0.5;
+                const imCenter = 0.0;
+                displayMandelbrot(canvas, ctx, reCenter, imCenter, 2.4);
                 let resizeHandle = -1;
                 window.addEventListener('resize', () => {
                     clearTimeout(resizeHandle);
                     resizeHandle = setTimeout(() => {
                         canvas.width = window.innerWidth;
                         canvas.height = window.innerHeight;
-                        displayMandelbrot(canvas, ctx);
+                        displayMandelbrot(canvas, ctx, reCenter, imCenter, 2.4);
                     }, 100);
                 });
             };
@@ -28,15 +42,38 @@
              * display the mandelbrot set to the context passed in with the canvas' dimensions
              * @type {number} buffer adress where the buffer is
              */
-            function displayMandelbrot(canvas, ctx) {
+            function displayMandelbrot(
+                canvas,
+                ctx,
+                realCenter,
+                imaginaryCenter,
+                imaginarySize
+            ) {
                 const width = canvas.width;
                 const height = canvas.height;
+                const realSize = imaginarySize * width / height;
                 const imgSize = width * height * 4;
                 const buffer = Module._malloc(imgSize);
-                fillMandelbrotImgBuffer(buffer, width, height, -2.0, -1.2, 1.2, 40);
-                const data = new ImageData(new Uint8ClampedArray(Module.HEAPU8.subarray(buffer, buffer + imgSize)), width, height);
+                fillMandelbrotImgBuffer(
+                    buffer,
+                    width,
+                    height,
+                    realCenter - realSize / 2.0,
+                    realCenter + realSize / 2.0,
+                    imaginaryCenter - imaginarySize / 2.0,
+                    imaginaryCenter + imaginarySize / 2.0,
+                    50
+                );
+                const data = new ImageData(
+                    new Uint8ClampedArray(
+                        Module.HEAPU8.subarray(buffer, buffer + imgSize)
+                    ),
+                    width,
+                    height
+                );
                 ctx.putImageData(data, 0, 0);
                 Module._free(buffer);
+                requestAnimationFrame(displayMandelbrot);
             }
         </script>
         <style>
